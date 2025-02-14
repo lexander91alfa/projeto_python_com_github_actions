@@ -1,0 +1,36 @@
+name: Processar Dados
+
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
+
+jobs:
+  processar:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Passo 1: Baixar o código do repositório
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      # Passo 2: Configurar Python
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # Passo 3: Instalar dependências (ex: pandas)
+      - name: Instalar dependências
+        run: pip install pandas
+
+      # Passo 4: Executar o script Python
+      - name: Executar script
+        run: python dados/script.py
+
+      # Passo 5 (Opcional): Verificar se o arquivo foi gerado
+      - name: Verificar saída
+        run: |
+          ls -la resultados/
+          cat resultados/saida.csv
