@@ -7,7 +7,7 @@ on:
     branches: [ "develop" ]
 
 env:
-  email: ${{ vars.EMAIL }}
+  email: ${{ vars.EMAIL_VAR }}
   nome: ${{ vars.NOME }}
 
 jobs:
