@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ "develop" ]
 
+env:
+  email: ${{ vars.EMAIL }}
+  nome: ${{ vars.NOME }}
+
 jobs:
   processar:
     runs-on: ubuntu-latest
@@ -34,3 +38,10 @@ jobs:
         run: |
           ls -la resultados/
           cat resultados/saida.csv
+      - name: Commit do arquivo gerado
+        run: |
+          git config --global user.email $email
+          git config --global user.name $nome
+          git add resultados/saida.csv
+          git commit -m "Atualiza arquivo de saída"
+          git push
