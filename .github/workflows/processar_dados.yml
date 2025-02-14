@@ -7,17 +7,21 @@ on:
     branches: [ "develop" ]
 
 env:
-  email: ${{ vars.EMAIL_VAR }}
-  nome: ${{ vars.NOME }}
+  EMAIL: ${{ vars.EMAIL_VAR }}  # Nome da variável no repositório
+  NOME: ${{ vars.NOME }}        # Deve corresponder ao nome definido em "Variables"
 
 jobs:
   processar:
     runs-on: ubuntu-latest
+    permissions:  # Permissões para o GITHUB_TOKEN poder fazer push
+      contents: write
 
     steps:
       # Passo 1: Baixar o código do repositório
       - name: Checkout do código
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Necessário para o git push funcionar
 
       # Passo 2: Configurar Python
       - name: Configurar Python
@@ -38,10 +42,12 @@ jobs:
         run: |
           ls -la resultados/
           cat resultados/saida.csv
+
+      # Passo 6: Commit do arquivo gerado
       - name: Commit do arquivo gerado
         run: |
-          git config --global user.email $email
-          git config --global user.name $nome
+          git config --global user.email "${{ vars.EMAIL_VAR }}"
+          git config --global user.name "${{ vars.NOME }}"
           git add resultados/saida.csv
           git commit -m "Atualiza arquivo de saída"
-          git push
+          git push origin HEAD:develop
