@@ -6,10 +6,6 @@ on:
   pull_request:
     branches: [ "develop" ]
 
-env:
-  EMAIL: ${{ vars.EMAIL_VAR }}  # Nome da variável no repositório
-  NOME: ${{ vars.NOME }}        # Deve corresponder ao nome definido em "Variables"
-
 jobs:
   processar:
     runs-on: ubuntu-latest
@@ -45,9 +41,12 @@ jobs:
 
       # Passo 6: Commit do arquivo gerado
       - name: Commit do arquivo gerado
+        env:
+          EMAIL: ${{ vars.EMAIL_VAR }}  # Variável do repositório (Settings > Variables)
+          NOME: ${{ vars.NOME }}        # Nome da variável deve ser igual ao definido
         run: |
-          git config --global user.email "${{ vars.EMAIL_VAR }}"
-          git config --global user.name "${{ vars.NOME }}"
+          git config --global user.email "$EMAIL"
+          git config --global user.name "$NOME"
           git add resultados/saida.csv
           git commit -m "Atualiza arquivo de saída"
           git push origin HEAD:develop
