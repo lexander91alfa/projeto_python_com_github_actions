@@ -1,4 +1,8 @@
 import pandas as pd
+import os
+
+# Criar diretório para salvar resultados
+os.makedirs('resultados', exist_ok=True)
 
 # Ler arquivo de entrada
 df = pd.read_csv('dados/entrada.csv')
