@@ -1,10 +1,7 @@
-name: Processar Dados
+name: Processar Dados Manual
 
 on:
-  push:
-    branches: [ "develop" ]
-  pull_request:
-    branches: [ "develop" ]
+  workflow_dispatch:  # Disparar manualmente
 
 jobs:
   processar:
@@ -42,7 +39,7 @@ jobs:
       # Passo 6: Commit do arquivo gerado
       - name: Commit do arquivo gerado
         run: |
-          git config --global user.email "${{secrets.S_EMAIL}}"
+          git config --global user.email "lexander.alfa@gmail.com"
           git config --global user.name "Alexandre J. Santos"
           git add resultados/saida.csv
           if git diff-index --quiet HEAD --; then
