@@ -84,3 +84,141 @@ O GitHub Actions executa as seguintes etapas:
 4. Push para a branch (`git push origin feature/nova-feature`).
 5. Abra um Pull Request.
 
+## Como criar uma action
+
+### 1. Crie um novo repositório no GitHub
+
+Primeiro, você precisará criar um novo repositório onde a sua action será armazenada. Este repositório conterá o código da sua action.
+
+### 2. Estrutura do projeto
+
+A estrutura básica do seu repositório deve ser a seguinte:
+
+```
+your-action-repo/
+├── action.yml
+├── package.json
+├── src/
+│   └── run.js
+└── tests/
+    └── test.js
+```
+
+### 3. Definição da action (action.yml)
+
+O arquivo `action.yml` é a definição da sua action. Ele define como a action será executada e quais entradas (inputs) e saídas (outputs) ela terá.
+
+Aqui está um exemplo de `action.yml`:
+
+```yaml
+name: 'My Private Action'
+description: 'Uma action privada para o meu fluxo de CI'
+inputs:
+  name:
+    description: 'O nome a ser impresso'
+    required: true
+    default: 'Mundo'
+outputs:
+  resultado:
+    description: 'O resultado da operação'
+runs:
+  using: 'node16'
+  main: 'src/run.js'
+```
+
+### 4. Implementação da action (run.js)
+
+O arquivo `run.js` é onde você implementa a lógica da sua action. Aqui está um exemplo simples:
+
+```javascript
+const { GitHub, context } = require('@actions/core');
+
+async function run() {
+  try {
+    const name = GitHub.getInput('name');
+    const result = `Olá, ${name}!`;
+    
+    // Saída para usar em outros steps
+    GitHub.setOutput('resultado', result);
+    
+    // Exemplo de como usar commands para interagir com o workflow
+    GitHub.getOctokit().rest.issues.createComment({
+      owner: context.repo.owner,
+      repo: context.repo.repo,
+      issue_number: 1,
+      body: result
+    });
+  } catch (error) {
+    GitHub.setFailed(error.message);
+  }
+}
+
+run();
+```
+
+### 5. Configuração do package.json
+
+Crie um arquivo `package.json` na raiz do seu projeto:
+
+```json
+{
+  "name": "my-private-action",
+  "version": "1.0.0",
+  "description": "Uma action privada para o meu fluxo de CI",
+  "main": "src/run.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "node tests/test.js"
+  },
+  "keywords": [],
+  "author": "Seu Nome",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^16.0.0",
+    "typescript": "^4.5.0"
+  }
+}
+```
+
+### 6. Publicando a action
+
+Para usar a action em seus workflows, você precisará publicá-la no GitHub Marketplace. Para isso:
+
+1. Vá para o seu repositório no GitHub.
+2. Navegue até a seção "Actions" no menu lateral.
+3. Clique em "New action" e siga as instruções para publicar sua action.
+
+### 7. Usando a action em seu workflow
+
+Agora que a action está publicada, você pode usá-la em seus workflows. Aqui está um exemplo de como usá-la:
+
+```yaml
+name: Meu Workflow
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Executar a minha action privada
+        uses: seu-usuario/your-action-repo@v1
+        id: minha-action
+        with:
+          name: 'Meu Projeto'
+      
+      - name: Usar a saída da action
+        run: |
+          echo "Resultado: ${{ steps.minha-action.outputs.resultado }}"
+```
+
+### 8. Dicas e Práticas
+
+- **Testes:** Sempre escreva testes para a sua action. Você pode usar o pacote `@actions/core` para simular o ambiente do GitHub Actions.
+- **Versionamento:** Use versionamento semântico para as versões da sua action.
+- **Documentação:** Mantenha a documentação da sua action atualizada para que outros desenvolvedores saibam como usá-la.
