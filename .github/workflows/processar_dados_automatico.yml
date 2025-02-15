@@ -1,0 +1,55 @@
+name: Processar Dados Automático
+
+on:
+  workflow_run:
+    workflows: ["Processar Dados Push"]
+    branches:
+      - main
+    types:
+      - completed
+
+jobs:
+  processar_manual:
+    runs-on: ubuntu-latest
+    permissions:  # Permissões para o GITHUB_TOKEN poder fazer push
+      contents: write
+
+    steps:
+      # Passo 1: Baixar o código do repositório
+      - name: Checkout do código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Necessário para o git push funcionar
+
+      # Passo 2: Configurar Python
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # Passo 3: Instalar dependências (ex: pandas)
+      - name: Instalar dependências
+        run: pip install pandas
+
+      # Passo 4: Executar o script Python
+      - name: Executar script
+        run: python dados/script.py
+
+      # Passo 5 (Opcional): Verificar se o arquivo foi gerado
+      - name: Verificar saída
+        run: |
+          ls -la resultados/
+          cat resultados/saida.csv
+
+      # Passo 6: Commit do arquivo gerado
+      - name: Commit do arquivo gerado
+        run: |
+          git config --global user.email "lexander.alfa@gmail.com"
+          git config --global user.name "Alexandre J. Santos"
+          git add resultados/saida.csv
+          if git diff-index --quiet HEAD --; then
+            echo "Nada para commitar"
+          else
+            git commit -m "Atualiza arquivo de saída"
+            git push origin HEAD:develop
+          fi
