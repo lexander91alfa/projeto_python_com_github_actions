@@ -222,3 +222,4 @@ jobs:
 - **Testes:** Sempre escreva testes para a sua action. Você pode usar o pacote `@actions/core` para simular o ambiente do GitHub Actions.
 - **Versionamento:** Use versionamento semântico para as versões da sua action.
 - **Documentação:** Mantenha a documentação da sua action atualizada para que outros desenvolvedores saibam como usá-la.
+
