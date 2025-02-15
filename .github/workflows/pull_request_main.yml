@@ -20,5 +20,5 @@ jobs:
           commit-message: "Adiciona dados processados"
           title: "Adiciona dados processados"
           body: "Dados processados a partir de um push na branch main"
-          branch: main
-          base: develop
+          branch: develop
+          base: main
