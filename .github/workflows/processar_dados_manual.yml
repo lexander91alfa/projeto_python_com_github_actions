@@ -1,13 +1,10 @@
-name: Processar Dados
+name: Processar Dados Manual
 
 on:
-  push:
-    branches: [ "develop" ]
-  pull_request:
-    branches: [ "develop" ]
+  workflow_dispatch:  # Disparar manualmente
 
 jobs:
-  processar:
+  processar_manual:
     runs-on: ubuntu-latest
     permissions:  # Permissões para o GITHUB_TOKEN poder fazer push
       contents: write
@@ -45,5 +42,9 @@ jobs:
           git config --global user.email "lexander.alfa@gmail.com"
           git config --global user.name "Alexandre J. Santos"
           git add resultados/saida.csv
-          git commit -m "Atualiza arquivo de saída"
-          git push origin HEAD:develop
+          if git diff-index --quiet HEAD --; then
+            echo "Nada para commitar"
+          else
+            git commit -m "Atualiza arquivo de saída"
+            git push origin HEAD:develop
+          fi
