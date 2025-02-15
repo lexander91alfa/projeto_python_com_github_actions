@@ -4,7 +4,7 @@ on:
   workflow_dispatch:  # Disparar manualmente
 
 jobs:
-  processar:
+  processar_manual:
     runs-on: ubuntu-latest
     permissions:  # Permissões para o GITHUB_TOKEN poder fazer push
       contents: write
