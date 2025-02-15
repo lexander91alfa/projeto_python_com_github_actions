@@ -1,0 +1,24 @@
+name: Cria pull request com dados processados para main
+
+on:
+  workflow_run:
+    workflows: ["Processar Dados Push"]
+    types:
+      - completed
+
+jobs:
+  create_pull_request:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Adiciona dados processados"
+          title: "Adiciona dados processados"
+          body: "Dados processados a partir de um push na branch main"
+          branch: main
+          base: main
