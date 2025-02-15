@@ -9,6 +9,9 @@ on:
 jobs:
   create_pull_request:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -20,5 +23,5 @@ jobs:
           commit-message: "Adiciona dados processados"
           title: "Adiciona dados processados"
           body: "Dados processados a partir de um push na branch main"
-          branch: main
-          base: develop
+          branch: develop
+          base: main
