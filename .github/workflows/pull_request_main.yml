@@ -21,4 +21,4 @@ jobs:
           title: "Adiciona dados processados"
           body: "Dados processados a partir de um push na branch main"
           branch: main
-          base: main
+          base: develop
